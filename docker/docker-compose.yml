@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  redis:
+    container_name: redis
+    image: redis:3.2.6 # Dockerfile: https://github.com/docker-library/redis/blob/2e14b84ea86939438834a453090966a9bd4367fb/3.2/Dockerfile
+    network_mode: bridge
+    ports: 
+      - 6379:6379
+
+  cassandra:
+    container_name: cassandra
+    image: cassandra:3.9 # Dockerfile: https://github.com/docker-library/cassandra/blob/3ca0a18a575ae318f753ab1ecf01d54c93192681/3.9/Dockerfile
+    network_mode: bridge
+    ports:
+      - 7000:7000 # intra-node communication
+      - 7001:7001 # TLS intra-node communication
+      - 7199:7199 # JMX
+      - 9042:9042 # CQL
+      - 9160:9160 # thrift service
+    volumes:
+      - "./script.cql:/script.cql"

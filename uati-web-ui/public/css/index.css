@@ -1,0 +1,42 @@
+.top_twitter_profile,
+.hashtag_pt,
+.tweet_by_hour {
+  color: black;
+}
+
+.top_twitter_profile {
+  width: 500px;
+  margin: 0 auto;
+}
+
+#container_body {
+  display: none;
+  color: black;
+}
+
+#container_body hr {
+  padding: 10px;
+}
+
+#container_body table {
+  margin-bottom: 10px;
+}
+
+#container_body h2 {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 30px 0;
+}
+
+#container_body {
+  margin: 0 auto;
+  width: 900px;
+  text-align: center;
+}
+
+#container_loading {
+  width: 400px;
+  margin: 0 auto;
+  padding: 10% 0;
+  text-align: center;
+}

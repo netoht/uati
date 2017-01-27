@@ -1,0 +1,73 @@
+plugins {
+    id 'scala'
+    id 'com.github.johnrengelman.shadow' version '1.2.4'
+}
+
+repositories {
+    jcenter()
+    maven { url 'https://dl.bintray.com/spark-packages/maven/' }
+    ivy {
+        url 'http://mirror.nexcess.net'
+        layout 'pattern', {
+            artifact '[organisation]/[module]-[revision]/[module]-[revision]-[classifier].[ext]'
+            m2compatible = true
+        }
+    }
+}
+
+configurations {
+    provided
+    spark
+}
+
+sourceSets {
+    main.compileClasspath += configurations.provided
+    test.compileClasspath += configurations.provided
+    test.runtimeClasspath += configurations.provided
+}
+
+ext {
+    scalaVersion = '2.11.8'
+    scalaBinaryVersion = '2.11'
+    sparkVersion = '2.1.0'
+    cassandraConnectorVersion = '2.0.0-M2-s_2.11'
+    redisCliVersion = '2.9.0'
+}
+
+dependencies {
+    provided "org.scala-lang:scala-library:$scalaVersion"
+    provided "org.apache.spark:spark-core_$scalaBinaryVersion:$sparkVersion"
+    provided "org.apache.spark:spark-sql_$scalaBinaryVersion:$sparkVersion"
+    compile "datastax:spark-cassandra-connector:$cassandraConnectorVersion"
+    compile "redis.clients:jedis:$redisCliVersion"
+
+    spark(group: 'apache.spark', name: 'spark', version: "$sparkVersion") {
+        artifact {
+            name = 'spark'
+            type = 'tgz'
+            classifier = 'bin-hadoop2.7'
+            extension = 'tgz'
+        }
+    }
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.scalatest:scalatest_2.11:3.0.1'
+}
+
+def sparkBaseDir = new File(buildDir, 'spark')
+
+RelativePath stripParent(RelativePath p) {
+    return new RelativePath(p.endsWithFile, p.segments[1..-1] as String[])
+}
+
+task setupSpark(type: Copy) {
+    from tarTree(configurations.spark.singleFile)
+    into sparkBaseDir
+    eachFile { it.relativePath = stripParent(it.relativePath) }
+    includeEmptyDirs false
+}
+
+tasks.withType(Test) {
+    dependsOn setupSpark
+    environment.SPARK_HOME = sparkBaseDir.absolutePath
+}

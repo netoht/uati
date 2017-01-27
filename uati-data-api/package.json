@@ -1,0 +1,12 @@
+{
+  "name": "uati-data-api",
+  "version": "1.0.0",
+  "main": "server.js",
+  "author": "Waldinar Oliveira Neto",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.4.7",
+    "hapi": "^16.1.0",
+    "redis": "^2.6.5"
+  }
+}
